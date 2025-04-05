@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Story to Visual Project</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap');
+    body {
+      font-family: 'Noto Sans KR', Arial, sans-serif;
+      background: linear-gradient(135deg, #f9f9fc, #e6f0ff);
+      color: #333;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
+    nav {
+      text-align: center;
+      padding: 20px;
+      background: white;
+      border-bottom: 1px solid #ddd;
+    }
+    nav a, nav span {
+      margin: 0 10px;
+      color: #4b6cb7;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 1.1em;
+      cursor: pointer;
+    }
+    nav a:hover, nav span:hover {
+      text-decoration: underline;
+    }
+    .hero {
+      background-color: #343148;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: white;
+      position: relative;
+      overflow: hidden;
+    }
+    .circle-bg {
+      position: absolute;
+      width: 800px;
+      height: 800px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 50%;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 0;
+      animation: ripple 8s infinite ease-in-out;
+    }
+    @keyframes ripple {
+      0%, 100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0.7;
+      }
+      50% {
+        transform: translate(-50%, -50%) scale(1.05);
+        opacity: 1;
+      }
+    }
+    .hero-content {
+      position: relative;
+      z-index: 1;
+    }
+    .hero h1 {
+      font-size: 2.8em;
+      margin-bottom: 0.5em;
+    }
+    .hero p {
+      font-size: 1.3em;
+      margin-bottom: 1.5em;
+    }
+    .hero button {
+      background: #fdd835;
+      color: #343148;
+      border: none;
+      font-size: 1.1em;
+      padding: 12px 24px;
+      margin: 10px;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .hero button:hover {
+      background: #ffe95c;
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="#" onclick="setLanguageAndRedirect('en')">English</a>
+    <a href="#" onclick="setLanguageAndRedirect('ko')">한국어</a>
+    <a href="#" onclick="setLanguageAndRedirect('ja')">日本語</a>
+    |
+    <span id="login-link" onclick="login()">로그인</span>
+    <span id="signup-link" onclick="signup()">회원가입</span>
+    <span id="logout-link" onclick="logout()" style="display:none">로그아웃</span>
+  </nav>
+  <div class="hero">
+    <div class="circle-bg"></div>
+    <div class="hero-content">
+      <h1 id="title">당신의 이야기를 세계로</h1>
+      <p id="subtitle">당신의 창작 이야기를 일러스트 작가와 연결하는 새로운 플랫폼 (베타)</p>
+      <button id="writer-btn">소설 작가</button>
+      <button id="illustrator-btn">일러스트 작가</button>
+      <button id="reader-btn">독자</button>
+    </div>
+  </div>
+  <script>
+    const translations = {
+      en: {
+        title: "Bring Your Story to Life",
+        subtitle: "A new platform that connects your stories with illustrators & manga artists (Beta)",
+        writer: "Writer",
+        illustrator: "Illustrator",
+        reader: "Reader"
+      },
+      ko: {
+        title: "당신의 이야기를 세계로",
+        subtitle: "당신의 창작 이야기를 일러스트 작가와 연결하는 새로운 플랫폼 (베타)",
+        writer: "소설 작가",
+        illustrator: "일러스트 작가",
+        reader: "독자"
+      },
+      ja: {
+        title: "あなたの物語を、漫画に。",
+        subtitle: "自作ストーリーをイラストレーターと繋ぐ新しいプラットフォーム（ベータ版）",
+        writer: "作家",
+        illustrator: "イラストレーター",
+        reader: "読者"
+      }
+    };
+    let currentLang = 'ko';
+    function setLanguage(lang) {
+      const t = translations[lang];
+      currentLang = lang;
+      document.getElementById('title').textContent = t.title;
+      document.getElementById('subtitle').textContent = t.subtitle;
+      document.getElementById('writer-btn').textContent = t.writer;
+      document.getElementById('illustrator-btn').textContent = t.illustrator;
+      document.getElementById('reader-btn').textContent = t.reader;
+    }
+    function setLanguageAndRedirect(lang) {
+      setLanguage(lang);
+      document.getElementById('writer-btn').onclick = function() {
+        window.location.href = 'writer.html?lang=' + lang;
+      };
+      document.getElementById('illustrator-btn').onclick = function() {
+        window.location.href = 'illustrator.html?lang=' + lang;
+      };
+      document.getElementById('reader-btn').onclick = function() {
+        window.location.href = 'reader.html?lang=' + lang;
+      };
+    }
+    function login() {
+      localStorage.setItem("loggedIn", "true");
+      updateAuthUI();
+      alert("로그인되었습니다!");
+    }
+    function signup() {
+      alert("회원가입은 현재 준비 중입니다.");
+    }
+    function logout() {
+      localStorage.removeItem("loggedIn");
+      updateAuthUI();
+      alert("로그아웃되었습니다!");
+    }
+    function updateAuthUI() {
+      const loggedIn = localStorage.getItem("loggedIn") === "true";
+      document.getElementById("login-link").style.display = loggedIn ? "none" : "inline";
+      document.getElementById("signup-link").style.display = loggedIn ? "none" : "inline";
+      document.getElementById("logout-link").style.display = loggedIn ? "inline" : "none";
+    }
+    setLanguage('ko');
+    updateAuthUI();
+  </script>
+</body>
+</html>

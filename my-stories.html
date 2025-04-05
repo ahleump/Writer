@@ -1,0 +1,140 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>나의 창작 전시회</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <style>
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      background: linear-gradient(120deg, #fdfbfb, #ebedee);
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      text-align: center;
+      padding: 50px 20px 30px;
+      background: #343148;
+      color: white;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 2em;
+    }
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 30px;
+      padding: 40px;
+      max-width: 1200px;
+      margin: auto;
+    }
+    .art-card {
+      background: white;
+      padding: 20px;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+      transition: transform 0.2s;
+      cursor: pointer;
+    }
+    .art-card:hover {
+      transform: scale(1.02);
+    }
+    .art-title {
+      font-size: 1.3em;
+      font-weight: bold;
+      margin-bottom: 8px;
+      color: #343148;
+    }
+    .art-summary {
+      font-size: 0.95em;
+      color: #555;
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      top: 5%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90%;
+      max-width: 800px;
+      background: white;
+      border: 2px solid #343148;
+      padding: 20px;
+      border-radius: 10px;
+      z-index: 999;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    }
+    .modal h2 {
+      margin-top: 0;
+      color: #343148;
+    }
+    .modal p {
+      white-space: pre-wrap;
+      margin-top: 10px;
+      color: #444;
+    }
+    .modal-close {
+      text-align: right;
+      margin-bottom: 10px;
+    }
+    .modal-close button {
+      background: #343148;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>나의 창작 전시회</h1>
+    <p>작성한 이야기들이 이곳에 전시됩니다.</p>
+  </header>
+
+  <div class="gallery" id="gallery"></div>
+
+  <div class="modal" id="modal">
+    <div class="modal-close">
+      <button onclick="closeModal()">닫기</button>
+    </div>
+    <h2 id="modal-title"></h2>
+    <p id="modal-summary"></p>
+    <p id="modal-content"></p>
+  </div>
+
+  <script>
+    const stories = JSON.parse(localStorage.getItem("stories") || "[]");
+    const gallery = document.getElementById("gallery");
+
+    if (stories.length === 0) {
+      gallery.innerHTML = "<p style='text-align:center;'>작성한 글이 없습니다.</p>";
+    }
+
+    stories.forEach((story, index) => {
+      const card = document.createElement("div");
+      card.className = "art-card";
+      card.innerHTML = `
+    <div class="art-title">${story.title || "제목 없음"}</div>
+    <div class="art-summary">${story.summary || "요약 없음"}</div>
+  `;
+      card.onclick = () => showModal(story);
+      gallery.appendChild(card);
+    });
+
+    function showModal(story) {
+      document.getElementById("modal-title").textContent = story.title;
+      document.getElementById("modal-summary").textContent = story.summary;
+      document.getElementById("modal-content").textContent = story.content;
+      document.getElementById("modal").style.display = "block";
+    }
+
+    function closeModal() {
+      document.getElementById("modal").style.display = "none";
+    }
+  </script>
+</body>
+</html>
